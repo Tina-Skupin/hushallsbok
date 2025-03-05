@@ -52,7 +52,10 @@ func main() {
 
 	// here come the data by monthöthing<
 	//filterByMonth(cleaned [][]string, months []int) [][]string {
-	timeRangeData := filterByMonth(cleanData, []int{1, 3})
+	timeRangeData := filterByMonth(cleanData, []int{12})
+	// timeRangeData := filterByMonth(cleanData, []int{1, 4})
+	//if i want to filter for several months
+
 	//testing the result
 	//fmt.Println("test for correct period")
 	//for _, row := range timeRangeData {
