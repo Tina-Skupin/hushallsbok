@@ -1,15 +1,15 @@
 package main
 
 import (
-	"os"
 	"encoding/csv"
+	"os"
+	"strconv"
 	"strings"
-    "strconv"
 )
 
 func ReadCSVFile(filename string) ([][]string, error) {
 	// open the file
-	file, err := os.Open("testcsv.csv")
+	file, err := os.Open(filename)
 	if err != nil {
 		return nil, err
 	}
@@ -19,7 +19,7 @@ func ReadCSVFile(filename string) ([][]string, error) {
 	reader := csv.NewReader(file)
 	records, err := reader.ReadAll()
 	if err != nil {
-		return nil, err 
+		return nil, err
 
 	}
 
@@ -27,28 +27,52 @@ func ReadCSVFile(filename string) ([][]string, error) {
 }
 
 func cleanTransactions(records [][]string) [][]string {
-    var cleaned [][]string
-    
-    // ignore the first 8 lines
-    for i := 8; i < len(records); i++ {
-        row := records[i]
-        if len(row) == 0 {
-            continue
-        }
+	var cleaned [][]string
 
-        // Clean up each field, removing extra spaces
-        date := strings.TrimSpace(row[1])
-        description := strings.TrimSpace(row[2])
-        amount := strings.TrimSpace(row[3])
-        
-        // Skip any rows where amount isn't a valid number
-        _, err := strconv.ParseFloat(amount, 64)
-        if err != nil {
-            continue
-        }
+	// ignore the first 8 lines
+	for i := 8; i < len(records); i++ {
+		row := records[i]
+		if len(row) == 0 {
+			continue
+		}
 
-        cleanedRow := []string{date, description, amount}
-        cleaned = append(cleaned, cleanedRow)
-    }
-    return cleaned
+		// Clean up each field, removing extra spaces
+		date := strings.TrimSpace(row[1])
+		description := strings.TrimSpace(row[2])
+		amount := strings.TrimSpace(row[3])
+
+		// Skip any rows where amount isn't a valid number
+		_, err := strconv.ParseFloat(amount, 64)
+		if err != nil {
+			continue
+		}
+
+		cleanedRow := []string{date, description, amount}
+		cleaned = append(cleaned, cleanedRow)
+	}
+	return cleaned
+}
+
+func filterByMonth(cleaned [][]string, months []int) [][]string {
+	// neue datenbank zum füllen
+	var transactionBase [][]string
+
+	for _, cleanedRow := range cleaned {
+
+		// split und umformatieren
+		// If date is "2024-12-22"
+		dateParts := strings.Split(cleanedRow[0], "-")
+		// dateParts would be ["2024", "12", "22"]
+		// The month is dateParts[1]
+		monthNum, err := strconv.Atoi(dateParts[1])
+		if err != nil {
+			continue
+		}
+		for _, month := range months {
+			if monthNum == month {
+				transactionBase = append(transactionBase, cleanedRow)
+			}
+		}
+	}
+	return transactionBase
 }
