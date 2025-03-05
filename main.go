@@ -49,6 +49,11 @@ func main() {
 
 	totalTransactions, matchedTransactions, totalCosts, totalIncome, matchedSum := calculateQualityIncomeCosts(timeRangeData)
 
+	months := []int{2, 3}
+	//timeRangeData := filterByMonth(cleanData, months)
 	printReport(costsByCategories, timeRangeData,
-		totalTransactions, matchedTransactions, totalCosts, totalIncome, matchedSum)
+		totalTransactions, matchedTransactions, 
+		totalCosts, totalIncome, matchedSum,
+		months, 2024)  
+		// need to put in year and month, remember!
 }

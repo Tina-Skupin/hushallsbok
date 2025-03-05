@@ -6,16 +6,24 @@ import (
 )
 
 func printReport(totals map[string]float64, transactions [][]string,
-	total, matched int, totalCosts, totalIncome, matchedSum float64) {
-	PrintReportHeader()
+	total, matched int, totalCosts, totalIncome, matchedSum float64, months []int, year int) {
+	PrintReportHeader(months, year)
 	PrintReportQuality(total, matched, totalCosts, matchedSum)
 	PrintFinancialSummary(totalCosts, totalIncome, transactions)
 	PrintCategoryBreakdown(totals)
 	PrintTransactionDetails(transactions)
 }
 
-func PrintReportHeader() {
-	fmt.Println("\nBudget Report")
+func PrintReportHeader(months []int, year int) {
+	fmt.Printf("\nBudget Report for ")
+	for i, month := range months {
+		if i > 0 {
+			fmt.Printf(", ")
+		}
+		fmt.Printf("%02d", month)  // %02d ensures single-digit months get a leading zero
+	}
+	fmt.Printf(" %d\n", year)
+	fmt.Println("----------------------------------------")
 	fmt.Println("=============")
 	fmt.Println("")
 	fmt.Println("")
