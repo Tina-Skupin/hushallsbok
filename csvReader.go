@@ -7,7 +7,14 @@ import (
 	"strings"
 )
 
-func ReadCSVFile(filename string) ([][]string, error) {
+type CSVConfig struct {
+	StartRow       int
+	DateCol        int
+	AmountCol      int
+	DescriptionCol int
+}
+
+func ReadCSVFile(filename string, config CSVConfig) ([][]string, error) {
 	// open the file
 	file, err := os.Open(filename)
 	if err != nil {
@@ -26,20 +33,21 @@ func ReadCSVFile(filename string) ([][]string, error) {
 	return records, err
 }
 
-func cleanTransactions(records [][]string) [][]string {
+func cleanTransactions(records [][]string, config CSVConfig) [][]string {
 	var cleaned [][]string
 
 	// ignore the first 8 lines
-	for i := 8; i < len(records); i++ {
+	for i := config.StartRow; i < len(records); i++ {
 		row := records[i]
 		if len(row) == 0 {
 			continue
 		}
 
 		// Clean up each field, removing extra spaces
-		date := strings.TrimSpace(row[1])
-		description := strings.TrimSpace(row[2])
-		amount := strings.TrimSpace(row[3])
+		date := strings.TrimSpace(row[config.DateCol])
+		description := strings.TrimSpace(row[config.DescriptionCol])
+		amount := strings.TrimSpace(row[config.AmountCol])
+		//amount := strings.TrimSpace(row[3]) original, in case something breaks
 
 		// Skip any rows where amount isn't a valid number
 		_, err := strconv.ParseFloat(amount, 64)

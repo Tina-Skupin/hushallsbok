@@ -8,8 +8,16 @@ import (
 func main() {
 	currentDir, _ := os.Getwd()
 	fmt.Printf("Current working directory: %s\n", currentDir)
+
+	//personspecific data
+	tinaConfig := CSVConfig{
+		StartRow: 8, DateCol: 1, DescriptionCol: 2, AmountCol: 3,
+	}
+
+
+
 	// we read in the orginal account file, code base in csvReader.go
-	data, err := ReadCSVFile("./testcsv.csv")
+	data, err := ReadCSVFile("./testcsv.csv", tinaConfig)
 	fmt.Printf("Number of rows read from CSV: %d\n", len(data))
 	fmt.Printf("First row: %v\n", data[0])
 	// insert the actual filename here!
@@ -19,7 +27,7 @@ func main() {
 	}
 
 	// we clean up the file and strip the header and unneccessary data
-	cleanData := cleanTransactions(data)
+	cleanData := cleanTransactions(data, tinaConfig)
 
 	//testing the result
 	//for _, row := range cleanData {
