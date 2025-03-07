@@ -15,6 +15,7 @@ type CSVConfig struct {
 	DescriptionCol int
 }
 
+
 func ReadCSVFile(filename string, config CSVConfig) ([][]string, error) {
 	// open the file
 	file, err := os.Open(filename)
@@ -43,10 +44,11 @@ func ReadCSVFile(filename string, config CSVConfig) ([][]string, error) {
     return records, nil
 }
 
+
 func cleanTransactions(records [][]string, config CSVConfig) [][]string {
 	var cleaned [][]string
 
-    /*fmt.Printf("Starting to clean transactions from row %d\n", config.StartRow)
+    /*debug fmt.Printf("Starting to clean transactions from row %d\n", config.StartRow)
     fmt.Printf("Using columns: Date=%d, Description=%d, Amount=%d\n", 
         config.DateCol, config.DescriptionCol, config.AmountCol) */
 
@@ -78,10 +80,33 @@ func cleanTransactions(records [][]string, config CSVConfig) [][]string {
 		cleanedRow := []string{date, description, amount}
 		cleaned = append(cleaned, cleanedRow)
 	}
-
-	//fmt.Printf("Total rows after cleaning: %d\n", len(cleaned))
 	return cleaned
 }
+
+func processOneFile(filename string, config CSVConfig) ([][]string, error) {
+    records, err := ReadCSVFile(filename, config)
+    if err != nil {
+        return nil, fmt.Errorf("error processing %s: %v", filename, err)
+    }
+    
+    cleanedRecords := cleanTransactions(records, config)
+    return cleanedRecords, nil
+}
+
+func combineTransactions(files []string, configs []CSVConfig) ([][]string, error) {
+    var allTransactions [][]string
+    
+    for i, file := range files {
+        transactions, err := processOneFile(file, configs[i])
+        if err != nil {
+            return nil, err
+        }
+        allTransactions = append(allTransactions, transactions...)
+    }
+    
+    return allTransactions, nil
+}
+
 
 func filterByMonth(cleaned [][]string, months []int) [][]string {
 	// neue datenbank zum füllen
