@@ -131,3 +131,31 @@ func filterByMonth(cleaned [][]string, months []int) [][]string {
 	}
 	return transactionBase
 }
+
+func filterExclusions(transactions [][]string) [][]string {
+    var filtered [][]string
+    
+    for _, transaction := range transactions {
+        if !shouldExclude(transaction, 1) { // 1 is the description column in cleaned data
+            filtered = append(filtered, transaction)
+        }
+    }
+    return filtered
+}
+
+func shouldExclude(transaction []string, descriptionCol int) bool {
+    description := transaction[descriptionCol]
+    
+    exclusionTerms := []string{
+        "verf Mobil",
+        "via internet",
+        // Add your specific terms here (check by analysis)
+    }
+
+    for _, term := range exclusionTerms {
+        if strings.Contains(strings.ToLower(description), strings.ToLower(term)) {
+            return true
+        }
+    }
+    return false
+}

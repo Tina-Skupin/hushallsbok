@@ -1,22 +1,12 @@
 package main
 
 import (
-	//"fmt"
 	"log"
-	//"os"
 )
 
 func main() {
-	//currentDir, _ := os.Getwd()
-	//fmt.Printf("Current working directory: %s\n", currentDir)
 
-	//personspecific data
-
-	// trying with martins data so greying out this one
-	//tinaConfig := CSVConfig{
-	//	StartRow: 8, DateCol: 1, DescriptionCol: 2, AmountCol: 3,
-	//}
-
+// configuration of the raw csv (where in the table are the infos we want filtered out)
 	configs := []CSVConfig{
         {
             StartRow:       8,
@@ -34,57 +24,32 @@ func main() {
 
 
     files := []string{
-        "2024_tina.csv",   // Use your actual file names
-        "2024_martin.csv",    // Use your actual file names
+        "2024_tina.csv",   // source file dataset tina 
+        "2024_martin.csv",    // source file dataset martin 
     }
+
+	months := []int{11, 12}
     
 
-	//martinConfig := CSVConfig{
-		//StartRow: 2, DateCol: 6, DescriptionCol: 9, AmountCol: 10,
-	//}
-
 // Get combined transactions instead of single file
+
 	transactions, err := combineTransactions(files, configs)
 	if err != nil {
 		log.Fatalf("Error combining transactions: %v", err)
 	}
+		
+	cleaned := filterByMonth(transactions, months)
+	finalTransactions := filterExclusions(cleaned)
+		
+		
+	// Analysis
 
-	//cleanData := cleanTransactions(transactions, martinConfig)
-
-	//testing the result
-	//for _, row := range cleanData {
-	//	fmt.Println(row)
-	//}
-
-	// here come the data by monthöthing<
-	//filterByMonth(cleaned [][]string, months []int) [][]string {
-	timeRangeData := filterByMonth(transactions, []int{11, 12})
-	// timeRangeData := filterByMonth(cleanData, []int{1, 4})
-	//if i want to filter for several months
-
-	//testing the result
-	//fmt.Println("test for correct period")
-	//for _, row := range timeRangeData {
-	//	fmt.Println(row)
-	//}
-	//fmt.Println("test for correct period finished")
-
-	// now we start with the calculations (code base in calculator.go)
-
-	//MonthlyCosts := calcTotalExpenses(cleanData)
-	//sum of all costs
-
-	costsByCategories := categorizeExpenses(timeRangeData)
+	costsByCategories := categorizeExpenses(finalTransactions)
 	// costs divided by category
+	totalTransactions, matchedTransactions, totalCosts, totalIncome, matchedSum := calculateQualityIncomeCosts(finalTransactions)
 
-	// Get your quality metrics
-	//totalTransactions, matchedTransactions, totalSum, matchedSum := calculateReportQuality(cleanData)
-
-	totalTransactions, matchedTransactions, totalCosts, totalIncome, matchedSum := calculateQualityIncomeCosts(timeRangeData)
-
-	months := []int{1, 2}
-	//timeRangeData := filterByMonth(cleanData, months)
-	printReport(costsByCategories, timeRangeData,
+	//Report
+	printReport(costsByCategories, finalTransactions,
 		totalTransactions, matchedTransactions, 
 		totalCosts, totalIncome, matchedSum,
 		months, 2024)  

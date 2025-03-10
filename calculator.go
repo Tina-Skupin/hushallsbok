@@ -71,19 +71,19 @@ func categorizeExpenses(transactions [][]string) map[string]float64 {
 
 	// Initialize totals map
 	totals := map[string]float64{
+		"rent":          0.0,
+		"flat":          0.0,
+		"komm/internet": 0.0,
 		"food":          0.0,
 		"clothes":       0.0,
-		"flat":          0.0,
 		"health":        0.0,
 		"transport":     0.0,
-		"rent":          0.0,
+		"Johanna Taschengeld": 0.0,
 		"hobby":         0.0,
-		"komm/internet": 0.0,
 		"travel":        0.0,
 		"other":         0.0,
 		"internal, ignore": 0.0,
 		"bank costs":	0.0,
-		"Johanna Taschengeld": 0.0,
 	}
 
 	for _, transaction := range transactions {
