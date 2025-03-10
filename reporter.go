@@ -20,7 +20,7 @@ func PrintReportHeader(months []int, year int) {
 		if i > 0 {
 			fmt.Printf(", ")
 		}
-		fmt.Printf("%02d", month)  // %02d ensures single-digit months get a leading zero
+		fmt.Printf("%02d", month) // %02d ensures single-digit months get a leading zero
 	}
 	fmt.Printf(" %d\n", year)
 	fmt.Println("----------------------------------------")
@@ -55,12 +55,36 @@ func PrintFinancialSummary(totalCosts float64, totalIncome float64, transactions
 	fmt.Println("")
 }
 
+
+// TODO: Consider adding category validation if invalid categories become a problem
+// Current behavior: Invalid categories are silently ignored in the report
+// Potential improvement: Add validateCategory() function using orderedCategories
+// as the source of truth for valid categories
+
 func PrintCategoryBreakdown(totals map[string]float64) {
+	orderedCategories := []string{
+		"rent",
+		"flat",
+		"food",
+		"komm/internet",
+		"clothes",
+		"health",
+		"transport",
+		"Johanna Taschengeld",
+		"hobby",
+		"travel",
+		"other",
+		"internal, ignore",
+		"bank costs",
+		// Add all your categories in the order you want them
+	}
 	// Categories
 	fmt.Println("\nSpending by Category")
 	fmt.Println("-----------------")
-	for category, amount := range totals {
-		fmt.Printf("%-15s %10.2f kr\n", category+":", amount)
+	for _, category := range orderedCategories {
+		if amount, exists := totals[category]; exists {
+			fmt.Printf("%-15s %10.2f kr\n", category+":", amount)
+		}
 	}
 }
 
