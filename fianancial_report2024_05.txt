@@ -1,0 +1,125 @@
+
+Budget Report for 05 2024
+----------------------------------------
+=============
+
+
+Report Quality check:
+-----------------
+Total transactions: 79
+Total costs: 58649.07 kr
+Categorized transactions: 66 (83.5%)
+Categorized amount: -56682.62 kr (-96.6%)
+
+
+Summary:
+-----------------
+Transactions: 79
+Total costs: 58649.07 kr
+Total income: 43441.00 kr
+Balance: -15208.07 kr
+
+
+Spending by Category
+-----------------
+rent:            -24598.67 kr
+flat:             -1829.90 kr
+el:               -2954.00 kr
+komm/internet:     -694.00 kr
+food:             -6798.32 kr
+restaurant:        -304.00 kr
+clothes:          -1040.99 kr
+health:           -1278.16 kr
+hobby:            -3859.17 kr
+transport:         -756.00 kr
+travel:          -12544.41 kr
+other:                0.00 kr
+Johanna Taschengeld:       0.00 kr
+bank costs:         -25.00 kr
+internal, ignore:       0.00 kr
+
+Kommentar: 
+-----------------
+no coments
+
+Annex. Transaction details
+-----------------
+2024-05-31   IKEA BARKARBY                     -623.00  flat            
+2024-05-31   IKEA BARKARBY                      -35.00  flat            
+2024-05-29   NORMAL KISTA                       -34.00  flat            
+2024-05-29   MCDONALDS KIST                     -65.00  restaurant      
+2024-05-29   LIDL 354 KISTA                    -191.30  food            
+2024-05-27   KISTA GROSSEN                     -107.45  Uncategorized   
+2024-05-27   NORMAL KISTA                       -62.00  flat            
+2024-05-27   RUSTA - 94 KIS                      -9.90  flat            
+2024-05-27   FTC Kista Gall                    -151.00  Uncategorized   
+2024-05-26   Zettle_*Husby                      -58.00  Uncategorized   
+2024-05-25   KJELL & CO 14                     -118.00  flat            
+2024-05-27   Pontus Hagland                     300.00  Uncategorized   
+2024-05-23   Pressbyran 440                     -48.00  Uncategorized   
+2024-05-23   HM SE0183                         -716.99  clothes         
+2024-05-24   Filmstaden.se                     -246.00  hobby           
+2024-05-21   LIDL 354 KISTA                     -79.80  food            
+2024-05-21   LIDL 354 KISTA                    -343.90  food            
+2024-05-21   AB STORSTOCKHO                     -42.00  transport       
+2024-05-17   DIREKTEN                           -32.00  Uncategorized   
+2024-05-17   ICA SUPERMARKE                     -29.90  food            
+2024-05-16   BARNBDR                           1250.00  Uncategorized   
+2024-05-19   Comviq                            -100.00  komm/internet   
+2024-05-14   ESPRESSO H 205                     -66.00  restaurant      
+2024-05-14   JULA SVERIGE A                    -948.00  flat            
+2024-05-14   Zettle_*SKYDDS                    -165.00  clothes         
+2024-05-14   LIDL 354 KISTA                    -428.90  food            
+2024-05-14   APOTEK HJARTAT                    -760.86  health          
+2024-05-14   Systembolaget                      -79.00  Uncategorized   
+2024-05-10   SKANSEN                            -45.00  hobby           
+2024-05-10   SKANSEN                            -50.40  hobby           
+2024-05-13   Upptäckare & Ä                    -100.00  Uncategorized   
+2024-05-08   Marrybrown                        -289.00  Uncategorized   
+2024-05-08   LIDL 354 KISTA                    -794.47  food            
+2024-05-10   AB STORSTOCKHO                     -42.00  transport       
+2024-05-10   AB STORSTOCKHO                     -42.00  transport       
+2024-05-06   LIDL 354 KISTA                    -331.60  food            
+2024-05-06   CAPIO V$RDCENT                    -275.00  health          
+2024-05-05   Max Burgers 20                    -173.00  restaurant      
+2024-05-06   Comviq                             -95.00  komm/internet   
+2024-05-06   SYNOPTIK SWEDE                     -90.00  health          
+2024-05-03   BASERBJUDANDE                      -25.00  bank costs      
+2024-05-30   el net                            -578.00  el              
+2024-05-30   rent                            -12847.00  rent            
+2024-05-30   el net                           -2376.00  el              
+2024-05-31   Bahnhof                           -499.00  komm/internet   
+2024-05-29   ICA KVANTUM KIST                   -40.80  food            
+2024-05-29   ICA KVANTUM KIST                  -197.00  food            
+2024-05-28   Swish AB STORSTOCKHOLM             -42.00  transport       
+2024-05-28   Swish AB STORSTOCKHOLM             -42.00  transport       
+2024-05-26   AFC Advanced Foo                  -802.00  Uncategorized   
+2024-05-26   LIDL 354 KISTA G                 -1391.51  food            
+2024-05-24   APOTEK HJARTAT V                   -65.04  health          
+2024-05-23   Swish AB STORSTOCKHOLM             -42.00  transport       
+2024-05-23   Swish AB STORSTOCKHOLM             -42.00  transport       
+2024-05-24   LÖN                              41891.00  Uncategorized   
+2024-05-22   Swish skickad +46727892649        -300.00  Uncategorized   
+2024-05-21   Swish AB STORSTOCKHOLM             -42.00  transport       
+2024-05-21   Swish AB STORSTOCKHOLM             -42.00  transport       
+2024-05-19   LIDL 354 KISTA G                 -1133.43  food            
+2024-05-17   Swish AB STORSTOCKHOLM             -42.00  transport       
+2024-05-15   Swish AB STORSTOCKHOLM             -42.00  transport       
+2024-05-15   Audible Gmbh*H74                  -118.77  hobby           
+2024-05-15   Swish AB STORSTOCKHOLM             -42.00  transport       
+2024-05-14   NEW YORKER 5304                   -159.00  clothes         
+2024-05-14   Swish AB STORSTOCKHOLM             -42.00  transport       
+2024-05-14   Swish AB STORSTOCKHOLM             -42.00  transport       
+2024-05-13   rent delay                      -11751.67  rent            
+2024-05-13   Swish AB STORSTOCKHOLM             -42.00  transport       
+2024-05-13   Swish AB STORSTOCKHOLM             -42.00  transport       
+2024-05-12   LIDL 354 KISTA G                  -800.72  food            
+2024-05-12   EUROWINGSMG2NRP_                 -4884.13  travel          
+2024-05-12   DB Vertrieb GmbH                 -1472.49  travel          
+2024-05-11   Web Sales Luxair                 -6187.79  travel          
+2024-05-07   APOTEK HJARTAT V                   -87.26  health          
+2024-05-06   Swish AB STORSTOCKHOLM             -42.00  transport       
+2024-05-06   Swish AB STORSTOCKHOLM             -42.00  transport       
+2024-05-05   BOOT.DEV EDUCATI                 -3399.00  hobby           
+2024-05-04   LIDL 354 KISTA G                  -697.80  food            
+2024-05-01   LIDL 354 KISTA G                  -337.19  food            

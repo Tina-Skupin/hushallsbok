@@ -2,10 +2,10 @@ package main
 
 import (
 	"encoding/csv"
+	"fmt"
 	"os"
 	"strconv"
 	"strings"
-	"fmt"
 )
 
 type CSVConfig struct {
@@ -14,7 +14,6 @@ type CSVConfig struct {
 	AmountCol      int
 	DescriptionCol int
 }
-
 
 func ReadCSVFile(filename string, config CSVConfig) ([][]string, error) {
 	// open the file
@@ -26,31 +25,30 @@ func ReadCSVFile(filename string, config CSVConfig) ([][]string, error) {
 
 	// read the file
 	reader := csv.NewReader(file)
-    
-    // Make the reader more flexible
-    reader.FieldsPerRecord = -1  // Allow variable number of fields
-    reader.LazyQuotes = true     // Be more tolerant of quotes
 
-    records, err := reader.ReadAll()
-    if err != nil {
-        return nil, fmt.Errorf("error reading CSV: %v", err)
-    }
+	// Make the reader more flexible
+	reader.FieldsPerRecord = -1 // Allow variable number of fields
+	reader.LazyQuotes = true    // Be more tolerant of quotes
 
-    /*Debug: Print the first few rows
-    for i := 0; i < min(3, len(records)); i++ {
-        fmt.Printf("Row %d has %d fields: %v\n", i, len(records[i]), records[i])
-    } */
+	records, err := reader.ReadAll()
+	if err != nil {
+		return nil, fmt.Errorf("error reading CSV: %v", err)
+	}
 
-    return records, nil
+	/*Debug: Print the first few rows
+	  for i := 0; i < min(3, len(records)); i++ {
+	      fmt.Printf("Row %d has %d fields: %v\n", i, len(records[i]), records[i])
+	  } */
+
+	return records, nil
 }
-
 
 func cleanTransactions(records [][]string, config CSVConfig) [][]string {
 	var cleaned [][]string
 
-    /*debug fmt.Printf("Starting to clean transactions from row %d\n", config.StartRow)
-    fmt.Printf("Using columns: Date=%d, Description=%d, Amount=%d\n", 
-        config.DateCol, config.DescriptionCol, config.AmountCol) */
+	/*debug fmt.Printf("Starting to clean transactions from row %d\n", config.StartRow)
+	  fmt.Printf("Using columns: Date=%d, Description=%d, Amount=%d\n",
+	      config.DateCol, config.DescriptionCol, config.AmountCol) */
 
 	// ignore the first config lines
 	for i := config.StartRow; i < len(records); i++ {
@@ -65,10 +63,10 @@ func cleanTransactions(records [][]string, config CSVConfig) [][]string {
 		amount := strings.TrimSpace(row[config.AmountCol])
 
 		// Print first few rows of cleaned data
-        /*if i < config.StartRow+3 {
-            fmt.Printf("Row %d cleaned: Date=%s, Description=%s, Amount=%s\n",
-                i, date, description, amount)
-		} */
+		/*if i < config.StartRow+3 {
+		            fmt.Printf("Row %d cleaned: Date=%s, Description=%s, Amount=%s\n",
+		                i, date, description, amount)
+				} */
 
 		// Skip any rows where amount isn't a valid number
 		_, err := strconv.ParseFloat(amount, 64)
@@ -77,36 +75,35 @@ func cleanTransactions(records [][]string, config CSVConfig) [][]string {
 			continue
 		}
 
-		cleanedRow := []string{date, description, amount}
+		cleanedRow := []string{date, description, amount, "Uncategorized"}
 		cleaned = append(cleaned, cleanedRow)
 	}
 	return cleaned
 }
 
 func processOneFile(filename string, config CSVConfig) ([][]string, error) {
-    records, err := ReadCSVFile(filename, config)
-    if err != nil {
-        return nil, fmt.Errorf("error processing %s: %v", filename, err)
-    }
-    
-    cleanedRecords := cleanTransactions(records, config)
-    return cleanedRecords, nil
+	records, err := ReadCSVFile(filename, config)
+	if err != nil {
+		return nil, fmt.Errorf("error processing %s: %v", filename, err)
+	}
+
+	cleanedRecords := cleanTransactions(records, config)
+	return cleanedRecords, nil
 }
 
 func combineTransactions(files []string, configs []CSVConfig) ([][]string, error) {
-    var allTransactions [][]string
-    
-    for i, file := range files {
-        transactions, err := processOneFile(file, configs[i])
-        if err != nil {
-            return nil, err
-        }
-        allTransactions = append(allTransactions, transactions...)
-    }
-    
-    return allTransactions, nil
-}
+	var allTransactions [][]string
 
+	for i, file := range files {
+		transactions, err := processOneFile(file, configs[i])
+		if err != nil {
+			return nil, err
+		}
+		allTransactions = append(allTransactions, transactions...)
+	}
+
+	return allTransactions, nil
+}
 
 func filterByMonth(cleaned [][]string, months []int) [][]string {
 	// neue datenbank zum füllen
@@ -133,29 +130,34 @@ func filterByMonth(cleaned [][]string, months []int) [][]string {
 }
 
 func filterExclusions(transactions [][]string) [][]string {
-    var filtered [][]string
-    
-    for _, transaction := range transactions {
-        if !shouldExclude(transaction, 1) { // 1 is the description column in cleaned data
-            filtered = append(filtered, transaction)
-        }
-    }
-    return filtered
+	var filtered [][]string
+
+	for _, transaction := range transactions {
+		if !shouldExclude(transaction, 1) { // 1 is the description column in cleaned data
+			filtered = append(filtered, transaction)
+		}
+	}
+	return filtered
 }
 
 func shouldExclude(transaction []string, descriptionCol int) bool {
-    description := transaction[descriptionCol]
-    
-    exclusionTerms := []string{
-        "verf Mobil",
-        "via internet",
-        // Add your specific terms here (check by analysis)
-    }
+	description := transaction[descriptionCol]
 
-    for _, term := range exclusionTerms {
-        if strings.Contains(strings.ToLower(description), strings.ToLower(term)) {
-            return true
-        }
-    }
-    return false
+	exclusionTerms := []string{
+		"verf Mobil",
+		"via internet",
+		"tina",
+		"överf",
+		"internet",
+		"stuff",
+		"haushaltsgeld",
+		// Add your specific terms here (check by analysis)
+	}
+
+	for _, term := range exclusionTerms {
+		if strings.Contains(strings.ToLower(description), strings.ToLower(term)) {
+			return true
+		}
+	}
+	return false
 }

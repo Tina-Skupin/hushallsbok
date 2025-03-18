@@ -5,12 +5,13 @@ import (
 	"log"
 	"os"
 	"strconv"
+	"sort"
 )
 
 func printReport(totals map[string]float64, transactions [][]string,
 	total, matched int, totalCosts, totalIncome, matchedSum float64, months []int, year int) {
 	// create report filename
-	filename := fmt.Sprintf("fianancial_report%d_%02d.txt", year, months[0])
+	filename := fmt.Sprintf("fianancial_report%d_%02d.csv", year, months[0])
 
 	file, err := os.Create(filename)
 	if err != nil {
@@ -22,6 +23,7 @@ func printReport(totals map[string]float64, transactions [][]string,
 	PrintReportQuality(file, total, matched, totalCosts, matchedSum)
 	PrintFinancialSummary(file, totalCosts, totalIncome, transactions)
 	PrintCategoryBreakdown(file, totals)
+	PrintComment(file)
 	PrintTransactionDetails(file, transactions)
 }
 
@@ -44,7 +46,7 @@ func PrintReportQuality(w *os.File, total, matched int, totalCosts, matchedSum f
 	fmt.Fprintf(w, "Report Quality check:\n")
 	fmt.Fprintln(w, "-----------------")
 
-	fmt.Fprintf(w, "Total transactions: %d\n", total)
+	fmt.Fprintf(w, "Total transactions:; %d\n", total)
 	fmt.Fprintf(w, "Total costs: %.2f kr\n", totalCosts)
 	fmt.Fprintf(w, "Categorized transactions: %d (%.1f%%)\n",
 		matched, float64(matched)/float64(total)*100)
@@ -75,17 +77,19 @@ func PrintCategoryBreakdown(w *os.File, totals map[string]float64) {
 	orderedCategories := []string{
 		"rent",
 		"flat",
-		"food",
+		"Electricity",
 		"komm/internet",
+		"food",
+		"restaurant",
 		"clothes",
 		"health",
-		"transport",
-		"Johanna Taschengeld",
 		"hobby",
+		"transport",
 		"travel",
 		"other",
-		"internal, ignore",
+		"Johanna Taschengeld",
 		"bank costs",
+		"internal, ignore",
 		// Add all your categories in the order you want them
 	}
 	// Categories
@@ -98,17 +102,29 @@ func PrintCategoryBreakdown(w *os.File, totals map[string]float64) {
 	}
 }
 
+func PrintComment(w *os.File) {
+	fmt.Fprintln(w, "\nKommentar: ")
+	fmt.Fprintln(w, "-----------------")
+	fmt.Fprintln(w, "no coments")
+}
+
 // The %-15s creates a left-aligned field 15 chars wide
 // %10.2f creates a right-aligned field 10 chars wide with 2 decimal places
+
+
 
 func PrintTransactionDetails(w *os.File, transactions [][]string) {
 	fmt.Fprintln(w, "\nAnnex. Transaction details")
 	fmt.Fprintln(w, "-----------------")
+	sort.Slice(transactions, func(i, j int) bool {
+		return transactions[i][3] < transactions[j][3]  // Compare categories
+	})
 	for _, transaction := range transactions {
 		amount, _ := strconv.ParseFloat(transaction[2], 64) // Convert amount back to float
-		fmt.Fprintf(w, "%-12s %-30s %10.2f kr\n",
+		fmt.Fprintf(w, "%-12s ; %-30s ; %10.2f ; %-15s \n",
 			transaction[0], // date
 			transaction[1], // description
-			amount)         // amount
+			amount, //amount
+			transaction[3]) // category
 	}
 }

@@ -1,0 +1,123 @@
+
+Budget Report for 09 2024
+----------------------------------------
+=============
+
+
+Report Quality check:
+-----------------
+Total transactions: 79
+Total costs: 30801.73 kr
+Categorized transactions: 56 (70.9%)
+Categorized amount: -28578.59 kr (-92.8%)
+
+
+Summary:
+-----------------
+Transactions: 79
+Total costs: 30801.73 kr
+Total income: 58670.48 kr
+Balance: 27868.75 kr
+
+
+Spending by Category
+-----------------
+rent:            -11284.00 kr
+flat:              -501.00 kr
+food:             -7852.61 kr
+komm/internet:     -844.00 kr
+clothes:           -239.00 kr
+health:            -781.14 kr
+transport:         -924.00 kr
+Johanna Taschengeld:       0.00 kr
+hobby:             -207.84 kr
+travel:           -5920.00 kr
+other:              -25.00 kr
+internal, ignore:       0.00 kr
+bank costs:           0.00 kr
+
+Kommentar: 
+-----------------
+no coments
+
+Annex. Transaction details
+-----------------
+2024-09-29   LIDL 354 KISTA                    -176.05 kr
+2024-09-29   APOTEK HJARTAT                    -230.56 kr
+2024-09-29   Kafe Plattan                      -150.00 kr
+2024-09-29   AM Store                           -25.00 kr
+2024-09-28   BILTEMA SWEDEN                     -54.00 kr
+2024-09-28   BILTEMA SWEDEN                      -5.00 kr
+2024-09-27   HM SE0183                          -49.99 kr
+2024-09-27   SKOPUNKTEN 205                     -90.00 kr
+2024-09-27   FTC Kista Gall                    -126.00 kr
+2024-09-27   SK@VDE LEKSAKE                    -126.75 kr
+2024-09-30   SYNOPTIK SWEDE                     -90.00 kr
+2024-09-29   AB STORSTOCKHO                     -42.00 kr
+2024-09-29   AB STORSTOCKHO                     -42.00 kr
+2024-09-28   Kulturförvaltn                    -110.00 kr
+2024-09-28   AB STORSTOCKHO                     -42.00 kr
+2024-09-28   AB STORSTOCKHO                     -42.00 kr
+2024-09-25   LIDL 354 KISTA                    -114.70 kr
+2024-09-23   LIDL 354 KISTA                    -155.00 kr
+2024-09-22   LIDL 354 KISTA                    -318.50 kr
+2024-09-20   LIDL 354 KISTA                    -236.20 kr
+2024-09-20   Systembolaget                     -169.10 kr
+2024-09-20   NORMAL KISTA                       -56.00 kr
+2024-09-18   BARNBDR                           1250.00 kr
+2024-09-19   294438490939                      1353.10 kr
+2024-09-14   LIDL 354 KISTA                     -72.91 kr
+2024-09-14   NEW YORKER 530                    -239.00 kr
+2024-09-14   CHOKLADFABRIKE                    -167.00 kr
+2024-09-14   ADLIBRIS MARKN                    -301.00 kr
+2024-09-14   AB STORSTOCKHO                     -42.00 kr
+2024-09-14   AB STORSTOCKHO                     -42.00 kr
+2024-09-14   Comviq                            -145.00 kr
+2024-09-11   APOTEK HJARTAT                    -129.00 kr
+2024-09-11   LIDL 354 KISTA                    -383.30 kr
+2024-09-11   AB STORSTOCKHO                     -42.00 kr
+2024-09-11   AB STORSTOCKHO                     -42.00 kr
+2024-09-09   KISTA GROSSEN                      -32.80 kr
+2024-09-09   Max Burgers 20                    -159.00 kr
+2024-09-10   Comviq                            -200.00 kr
+2024-09-06   LIDL 354 KISTA                    -690.40 kr
+2024-09-06   FTC Kista Gall                    -110.50 kr
+2024-09-07   JOANNA KOWALIK                      50.00 kr
+2024-09-07   JOANNA KOWALIK                    -250.00 kr
+2024-09-04   LIDL 354 KISTA                    -432.60 kr
+2024-09-01   ICA KVANTUM KI                     -87.20 kr
+2024-09-01   APOTEK HJARTAT                     -59.00 kr
+2024-09-01   KL#TTERCENTRET                    -550.00 kr
+2024-09-02   BASERBJUDANDE                      -25.00 kr
+2024-09-30   Bahnhof                           -499.00 kr
+2024-09-27   Blizzard Enterta                   -92.44 kr
+2024-09-27   ALZAHRA RESTAURA                  -150.00 kr
+2024-09-27   LIDL 354 KISTA G                 -1259.40 kr
+2024-09-25   Europabetalning                    561.44 kr
+2024-09-25   SAS  11725248487                 -2740.00 kr
+2024-09-25   SAS  11725248487                 -3180.00 kr
+2024-09-25   LÖN                              44887.00 kr
+2024-09-25   LÖN                               7746.76 kr
+2024-09-18   Swish AB STORSTOCKHOLM             -42.00 kr
+2024-09-18   Swish AB STORSTOCKHOLM             -42.00 kr
+2024-09-17   Swish AB STORSTOCKHOLM             -42.00 kr
+2024-09-17   Swish AB STORSTOCKHOLM             -42.00 kr
+2024-09-16   rent                            -11284.00 kr
+2024-09-16   el net                            -501.00 kr
+2024-09-16   LIDL 354 KISTA G                 -1801.60 kr
+2024-09-15   Audible Gmbh*AL0                  -115.40 kr
+2024-09-11   Swish AB STORSTOCKHOLM             -42.00 kr
+2024-09-11   Swish AB STORSTOCKHOLM             -42.00 kr
+2024-09-10   LIDL 354 KISTA G                  -198.77 kr
+2024-09-10   APOTEK HJARTAT K                  -272.58 kr
+2024-09-10   Swish AB STORSTOCKHOLM             -42.00 kr
+2024-09-10   Swish AB STORSTOCKHOLM             -42.00 kr
+2024-09-09   Swish AB STORSTOCKHOLM             -42.00 kr
+2024-09-09   Swish AB STORSTOCKHOLM             -42.00 kr
+2024-09-06   Europabetalning                   2822.18 kr
+2024-09-03   Swish AB STORSTOCKHOLM             -42.00 kr
+2024-09-03   Swish AB STORSTOCKHOLM             -42.00 kr
+2024-09-02   Swish AB STORSTOCKHOLM             -42.00 kr
+2024-09-02   Swish AB STORSTOCKHOLM             -42.00 kr
+2024-09-01   ALZAHRA RESTAURA                  -265.00 kr
+2024-09-01   LIDL 354 KISTA G                 -1201.98 kr

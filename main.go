@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"fmt"
 )
 
 func main() {
@@ -27,9 +28,9 @@ func main() {
 		"2024_martin.csv", // source file dataset martin
 	}
 
-	months := []int{11}
+	//months := []int{4}
 
-	//	months := []int{11, 12} if several months
+	months := []int{1,2,3,4,5,6,7,8,9,10,11, 12} //if several months
 
 	// Get combined transactions instead of single file
 
@@ -47,10 +48,14 @@ func main() {
 	// costs divided by category
 	totalTransactions, matchedTransactions, totalCosts, totalIncome, matchedSum := calculateQualityIncomeCosts(finalTransactions)
 
+
+
 	//Report
 	printReport(costsByCategories, finalTransactions,
 		totalTransactions, matchedTransactions,
 		totalCosts, totalIncome, matchedSum,
 		months, 2024)
+	fmt.Println("Bericht wurde erstellt")
+	fmt.Println("=============")
 	// need to put in year and month, remember!
 }
