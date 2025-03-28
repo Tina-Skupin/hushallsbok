@@ -16,7 +16,7 @@ type CSVConfig struct {
 }
 
 func ReadCSVFile(filename string, config CSVConfig) ([][]string, error) {
-	// open the file
+	// open the rootfile
 	file, err := os.Open(filename)
 	if err != nil {
 		return nil, fmt.Errorf("error opening file: %v", err)
@@ -34,21 +34,12 @@ func ReadCSVFile(filename string, config CSVConfig) ([][]string, error) {
 	if err != nil {
 		return nil, fmt.Errorf("error reading CSV: %v", err)
 	}
-
-	/*Debug: Print the first few rows
-	  for i := 0; i < min(3, len(records)); i++ {
-	      fmt.Printf("Row %d has %d fields: %v\n", i, len(records[i]), records[i])
-	  } */
-
 	return records, nil
 }
 
+//cleans up the data, removes whitespaces etc.
 func cleanTransactions(records [][]string, config CSVConfig) [][]string {
 	var cleaned [][]string
-
-	/*debug fmt.Printf("Starting to clean transactions from row %d\n", config.StartRow)
-	  fmt.Printf("Using columns: Date=%d, Description=%d, Amount=%d\n",
-	      config.DateCol, config.DescriptionCol, config.AmountCol) */
 
 	// ignore the first config lines
 	for i := config.StartRow; i < len(records); i++ {
@@ -61,12 +52,6 @@ func cleanTransactions(records [][]string, config CSVConfig) [][]string {
 		date := strings.TrimSpace(row[config.DateCol])
 		description := strings.TrimSpace(row[config.DescriptionCol])
 		amount := strings.TrimSpace(row[config.AmountCol])
-
-		// Print first few rows of cleaned data
-		/*if i < config.StartRow+3 {
-		            fmt.Printf("Row %d cleaned: Date=%s, Description=%s, Amount=%s\n",
-		                i, date, description, amount)
-				} */
 
 		// Skip any rows where amount isn't a valid number
 		_, err := strconv.ParseFloat(amount, 64)
@@ -81,6 +66,7 @@ func cleanTransactions(records [][]string, config CSVConfig) [][]string {
 	return cleaned
 }
 
+// read the first file into the system
 func processOneFile(filename string, config CSVConfig) ([][]string, error) {
 	records, err := ReadCSVFile(filename, config)
 	if err != nil {
@@ -91,6 +77,7 @@ func processOneFile(filename string, config CSVConfig) ([][]string, error) {
 	return cleanedRecords, nil
 }
 
+// add the second file into the system
 func combineTransactions(files []string, configs []CSVConfig) ([][]string, error) {
 	var allTransactions [][]string
 
@@ -105,13 +92,13 @@ func combineTransactions(files []string, configs []CSVConfig) ([][]string, error
 	return allTransactions, nil
 }
 
+// filters out the relevant time
 func filterByMonth(cleaned [][]string, months []int) [][]string {
 	// neue datenbank zum füllen
 	var transactionBase [][]string
 
 	for _, cleanedRow := range cleaned {
 
-		// split und umformatieren
 		// If date is "2024-12-22"
 		dateParts := strings.Split(cleanedRow[0], "-")
 		// dateParts would be ["2024", "12", "22"]
@@ -140,6 +127,7 @@ func filterExclusions(transactions [][]string) [][]string {
 	return filtered
 }
 
+// if there are individual transactions you want not to be in the report you can manually exclude them here
 func shouldExclude(transaction []string, descriptionCol int) bool {
 	description := transaction[descriptionCol]
 

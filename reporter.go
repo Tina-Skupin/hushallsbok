@@ -3,8 +3,6 @@ package main
 import (
 	"encoding/csv"
 	"fmt"
-
-	//"log"
 	"os"
 	"path/filepath"
 	"sort"
@@ -21,8 +19,6 @@ func ensureOutputDir(dirPath string) error {
 	}
 	return nil
 }
-
-// here comes the new code structure. Let's pray!
 
 // Reporter handles report generation and saving
 type Reporter struct {
@@ -154,10 +150,6 @@ func SaveTextReport(report string, summary *FinancialSummary) error {
     return os.WriteFile(txtFilename, []byte(report), 0644)
 }
 
-//func SaveTextReport(report string, filename string) error {
-//	return os.WriteFile(filename, []byte(report), 0644)
-//} old version
-
 func GenerateCSVReport(summary *FinancialSummary, transactions [][]string, filename string) error {
 	// Ensure output directory exists
 	outputDir := "output" // You can change this to any directory name you prefer
@@ -213,7 +205,7 @@ func GenerateCSVReport(summary *FinancialSummary, transactions [][]string, filen
 
 	// Write a blank row as separator
 	writer.Write([]string{"", "", "", ""})
-	
+
 	// Write headers
 	headers := []string{"Date", "Description", "Amount", "Category"}
 	if err := writer.Write(headers); err != nil {

@@ -131,8 +131,6 @@ var categories = map[string]string{
 }
 
 
-
-
 func categorizeExpenses(transactions [][]string) (map[string]float64, float64) {
 
 	// Initialize totals map
