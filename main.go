@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"path/filepath"
 )
 
 func main() {
@@ -30,7 +31,7 @@ func main() {
 		"2024_martin.csv", // source file dataset 2
 	}
 
-	months := []int{3}
+	months := []int{6}
 	// time scope
 	//months := []int{1,2,3,4,5,6,7,8,9,10,11,12} //if several months
 
@@ -45,16 +46,49 @@ func main() {
 
 	// Analysis
 
-	costsByCategories, matchies := categorizeExpenses(finalTransactions)
+	summary := calculateFinances(finalTransactions, 2023, months)
+
+	//die alten calls
+	//costsByCategories, matchies := categorizeExpenses(finalTransactions)
 	// costs divided by category
-	totalTransactions, matchedTransactions, totalCosts, totalIncome, matchedSum := calculateQualityIncomeCosts(finalTransactions)
+	//totalTransactions, matchedTransactions, totalCosts, totalIncome, matchedSum := calculateQualityIncomeCosts(finalTransactions)
 
 	//Report
-	printReport(costsByCategories, finalTransactions,
-		totalTransactions, matchedTransactions,
-		totalCosts, totalIncome, matchedSum, matchies,
-		months, 2024)
-	fmt.Println("Bericht wurde erstellt")
-	fmt.Println("=============")
-	// need to put in year and month, remember!
+
+	//alter Report
+	/*printReport(costsByCategories, finalTransactions,
+			totalTransactions, matchedTransactions,
+			totalCosts, totalIncome, matchedSum, matchies,
+			months, 2024)
+		fmt.Println("Bericht wurde erstellt")
+		fmt.Println("=============")
+		// need to put in year and month, remember!
+	} */
+
+	//neuer Report
+
+	// Generate and save the text report
+
+	// Create a reporter instance
+	reporter := NewReporter(summary, "output") // or whatever output directory you want
+
+	// Generate the text report
+	textReport := reporter.GenerateTextReport(transactions)
+	fmt.Println("Report length:", len(textReport))
+	fmt.Println("First 100 chars:", textReport[:100])
+
+	// Save the text report
+	// Assuming outputFolder is where your CSV is saved
+	textFilePath := filepath.Join("output", "financial_report.txt")
+	err = SaveTextReport(textReport, textFilePath)
+	fmt.Println("SaveTextReport result:", err)
+	if err != nil {
+		log.Fatalf("Failed to save text report: %v", err)
+	}
+
+	// Generate and save the CSV report
+	err = GenerateCSVReport(&summary, transactions, "financial_report.csv")
+	if err != nil {
+		log.Fatalf("Failed to save CSV report: %v", err)
+	}
 }

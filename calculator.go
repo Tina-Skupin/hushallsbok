@@ -6,6 +6,7 @@ import (
 )
 
 // categories defined as globals, outside of a function
+// the "for" in your account details, categorized individually, add and remove as you need them
 var categories = map[string]string{
 	"RENT":            "rent",
 	"RENT DELAY":      "rent",
@@ -129,6 +130,9 @@ var categories = map[string]string{
 	"TASCHENGEL":      "Jo Taschengeld",
 }
 
+
+
+
 func categorizeExpenses(transactions [][]string) (map[string]float64, float64) {
 
 	// Initialize totals map
@@ -200,4 +204,23 @@ func calculateQualityIncomeCosts(transactions [][]string) (int, int, float64, fl
 		}
 	}
 	return totalTransactions, matchedTransactions, totalCosts, totalIncome, matchedSum
+}
+
+
+func calculateFinances(transactions [][]string, year int, months []int) FinancialSummary {
+    // Initialize our summary with default values
+    summary := FinancialSummary{
+        Year:           year,
+        Months:         months,
+        TotalsByCategory: make(map[string]float64),
+    }
+
+    // Use the existing functions but store results in our struct
+    summary.TotalTransactions, summary.MatchedTransactions, 
+    summary.TotalCosts, summary.TotalIncome, _ = calculateQualityIncomeCosts(transactions)
+    
+    // Get category totals and total categorized amount
+    summary.TotalsByCategory, summary.TotalAllCategorized = categorizeExpenses(transactions)
+    
+    return summary
 }

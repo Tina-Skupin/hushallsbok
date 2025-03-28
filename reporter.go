@@ -3,67 +3,149 @@ package main
 import (
 	"encoding/csv"
 	"fmt"
-	"log"
+
+	//"log"
 	"os"
+	"path/filepath"
 	"sort"
 	"strconv"
-	"path/filepath"
+	"strings"
 )
 
-//create the output directory
+// create the output directory
 func ensureOutputDir(dirPath string) error {
-    // Check if directory exists
-    if _, err := os.Stat(dirPath); os.IsNotExist(err) {
-        // Create directory if it doesn't exist
-        return os.MkdirAll(dirPath, 0755)
-    }
-    return nil
-}
-
-
-func printReport(totals map[string]float64, transactions [][]string,
-	total, matched int, totalCosts, totalIncome, matchedSum float64, matchies float64, months []int, year int) {
-	// create report filename
-
-	// Ensure output directory exists
-	outputDir := "output" // Use the same directory as in saveAsCSV
-	if err := ensureOutputDir(outputDir); err != nil {
-    	log.Fatalf("Failed to create output directory: %v", err)
-}
-
-	// Create text file with directory path
-	txtFilename := filepath.Join(outputDir, fmt.Sprintf("financial_report%d_%02d.txt", year, months[0]))
-	file, err := os.Create(txtFilename)
-	if err != nil {
-		log.Fatalf("failed to create file: %v", err)
+	// Check if directory exists
+	if _, err := os.Stat(dirPath); os.IsNotExist(err) {
+		// Create directory if it doesn't exist
+		return os.MkdirAll(dirPath, 0755)
 	}
-	defer file.Close()
-
-
-
-
-	PrintReportHeader(file, months, year)
-	PrintFinancialSummary(file, totalCosts, totalIncome, transactions)
-	PrintCategoryBreakdown(file, totals)
-	Printuncategorized(file, totalCosts, matchies)
-	PrintComment(file)
-	PrintTransactionDetails(file, transactions)
-	PrintReportQuality(file, total, matched, totalCosts, matchedSum)
-
-	// Now also save as CSV
-	err = saveAsCSV(transactions, totals, year, months, totalCosts, totalIncome, matchedSum)
-	//err = saveAsCSV(transactions, totals, year, months)
-	if err != nil {
-		log.Fatalf("failed to create CSV file: %v", err)
-	}
-
-	fmt.Println("Reports generated successfully: ")
-	fmt.Println("- Text report:", txtFilename)
-	fmt.Println("- CSV report: financial_report" + strconv.Itoa(year) + "_" + fmt.Sprintf("%02d", months[0]) + ".csv")
+	return nil
 }
 
-// Add this new function to save as CSV
-func saveAsCSV(transactions [][]string, totals map[string]float64, year int, months []int, totalCosts float64, totalIncome float64, matchedSum float64) error {
+// here comes the new code structure. Let's pray!
+
+// Reporter handles report generation and saving
+type Reporter struct {
+	Summary   FinancialSummary
+	OutputDir string
+}
+
+// NewReporter creates a reporter instance
+func NewReporter(summary FinancialSummary, outputDir string) *Reporter {
+	return &Reporter{
+		Summary:   summary,
+		OutputDir: outputDir,
+	}
+}
+
+// GenerateTextReport formats the financial summary as a text report
+func (r *Reporter) GenerateTextReport(transactions [][]string) string {
+	s := r.Summary
+	var reportBuilder strings.Builder
+
+	// Header
+	reportBuilder.WriteString(fmt.Sprintf("\nBudget Report for "))
+	for i, month := range s.Months {
+		if i > 0 {
+			reportBuilder.WriteString(", ")
+		}
+		reportBuilder.WriteString(fmt.Sprintf("%02d", month))
+	}
+	reportBuilder.WriteString(fmt.Sprintf(" %d\n", s.Year))
+	reportBuilder.WriteString("----------------------------------------\n")
+	reportBuilder.WriteString("=============\n\n\n")
+
+	// Financial Summary
+	reportBuilder.WriteString("Summary:\n")
+	reportBuilder.WriteString("-----------------\n")
+	reportBuilder.WriteString(fmt.Sprintf("Transactions: %d", len(transactions)))
+	reportBuilder.WriteString(fmt.Sprintf("\nTotal income: %.2f kr", s.TotalIncome))
+	reportBuilder.WriteString(fmt.Sprintf("\nTotal costs: %.2f kr", s.TotalCosts))
+	reportBuilder.WriteString(fmt.Sprintf("\nBalance: %.2f kr", s.TotalIncome-s.TotalCosts))
+	reportBuilder.WriteString("\n\n")
+
+	// Category Breakdown
+	reportBuilder.WriteString("\nSpending by Category\n")
+	reportBuilder.WriteString("-----------------\n")
+	orderedCategories := []string{
+		"rent",
+		"flat",
+		"Electricity",
+		"komm/internet",
+		"food",
+		"restaurant",
+		"clothes",
+		"health",
+		"hobby",
+		"transport",
+		"travel",
+		"other",
+		"Johanna Taschengeld",
+		"bank costs",
+	}
+
+	for _, category := range orderedCategories {
+		if amount, exists := s.TotalsByCategory[category]; exists {
+			reportBuilder.WriteString(fmt.Sprintf("%-15s %17.2f kr\n", category+":", amount))
+		}
+	}
+
+	// Uncategorized
+	reportBuilder.WriteString(fmt.Sprintf("%-15s %17.2f kr\n", "uncategorized:", -(s.TotalCosts + s.TotalAllCategorized)))
+	reportBuilder.WriteString("\n\n")
+
+	// Comment
+	reportBuilder.WriteString("\nKommentar: \n")
+	reportBuilder.WriteString("-----------------\n")
+	reportBuilder.WriteString("Einkuenfte uncategorized (Lohn, Barnbidrag)\n\n\n\n")
+
+	// Transaction Details
+	reportBuilder.WriteString("\nAnnex. Transaction details\n")
+	reportBuilder.WriteString("-----------------\n")
+
+	// Sort transactions by category for consistency
+	sortedTransactions := make([][]string, len(transactions))
+	copy(sortedTransactions, transactions)
+	sort.Slice(sortedTransactions, func(i, j int) bool {
+		// First sort by category
+		if sortedTransactions[i][3] != sortedTransactions[j][3] {
+			return sortedTransactions[i][3] < sortedTransactions[j][3]
+		}
+		// Then by date
+		return sortedTransactions[i][0] < sortedTransactions[j][0]
+	})
+
+	// Print transactions grouped by category
+	currentCategory := ""
+	for _, transaction := range sortedTransactions {
+		if transaction[3] != currentCategory {
+			currentCategory = transaction[3]
+			reportBuilder.WriteString(fmt.Sprintf("\n%s\n", currentCategory))
+		}
+
+		date := transaction[0]
+		description := transaction[1]
+		amountStr := transaction[2]
+
+		amount, err := strconv.ParseFloat(amountStr, 64)
+		if err != nil {
+			continue
+		}
+
+		reportBuilder.WriteString(fmt.Sprintf("%s %-40s %10.2f kr\n",
+			date, description, amount))
+	}
+
+	return reportBuilder.String()
+}
+
+// create the txt report
+func SaveTextReport(report string, filename string) error {
+	return os.WriteFile(filename, []byte(report), 0644)
+}
+
+// here comes the new csv code from boots:
+func GenerateCSVReport(summary *FinancialSummary, transactions [][]string, filename string) error {
 	//func saveAsCSV(transactions [][]string, totals map[string]float64, year int, months []int) error {
 	// Ensure output directory exists
 	outputDir := "output" // You can change this to any directory name you prefer
@@ -71,9 +153,9 @@ func saveAsCSV(transactions [][]string, totals map[string]float64, year int, mon
 		return err
 	}
 	// Create CSV filename with directory path
-	filename := filepath.Join(outputDir, fmt.Sprintf("financial_report%d_%02d.csv", year, months[0]))		
+	csvfilename := filepath.Join(outputDir, fmt.Sprintf("financial_report%d_%02d.csv", summary.Year, summary.Months[0]))
 
-	file, err := os.Create(filename)
+	file, err := os.Create(csvfilename)
 	if err != nil {
 		return err
 	}
@@ -85,199 +167,55 @@ func saveAsCSV(transactions [][]string, totals map[string]float64, year int, mon
 	writer := csv.NewWriter(file)
 	defer writer.Flush()
 
-	// First write financial summary at the top
+	// Write summary information
 	writer.Write([]string{"Financial Summary", "", "", ""})
 	writer.Write([]string{"Transactions", fmt.Sprintf("%d", len(transactions)), "", ""})
-	writer.Write([]string{"Total income", fmt.Sprintf("%.2f", totalIncome), "", ""})
-	writer.Write([]string{"Total costs", fmt.Sprintf("%.2f", totalCosts), "", ""})
-	writer.Write([]string{"Balance", fmt.Sprintf("%.2f", totalIncome-totalCosts), "", ""})
+	writer.Write([]string{"Total income", fmt.Sprintf("%.2f", summary.TotalIncome), "", ""})
+	writer.Write([]string{"Total costs", fmt.Sprintf("%.2f", summary.TotalCosts), "", ""})
+	writer.Write([]string{"Balance", fmt.Sprintf("%.2f", summary.TotalIncome-summary.TotalCosts), "", ""})
 
 	// Write a blank row as separator
 	writer.Write([]string{"", "", "", ""})
 
-	// Write category summary
-	writer.Write([]string{"Category Summary", "", "", ""})
-	writer.Write([]string{"Category", "Amount", "", ""})
-
-	// Get ordered category list (must match the one in PrintCategoryBreakdown)
-	orderedCategories := []string{
-		"rent",
-		"flat",
-		"Electricity",
-		"komm/internet",
-		"food",
-		"restaurant",
-		"clothes",
-		"health",
-		"hobby",
-		"transport",
-		"travel",
-		"other",
-		"Johanna Taschengeld",
-		"bank costs",
-		"internal, ignore",
-	}
-
-	// Write category totals
-	for _, category := range orderedCategories {
-		if amount, exists := totals[category]; exists {
-			if err := writer.Write([]string{category, fmt.Sprintf("%.2f", amount), "", ""}); err != nil {
-				return err
-			}
-		}
-	}
-
-	writer.Write([]string{"uncategorized:", fmt.Sprintf("%.2f", -(totalCosts + matchedSum)), "", ""})
-
-	// Write a blank row as separator
-	writer.Write([]string{"", "", "", ""})
-
-	// Write the header row for transactions
+	// Write headers
 	headers := []string{"Date", "Description", "Amount", "Category"}
 	if err := writer.Write(headers); err != nil {
 		return err
 	}
 
-	// Sort transactions by category for consistency with your text report
-	sort.Slice(transactions, func(i, j int) bool {
-		return transactions[i][3] < transactions[j][3] // Compare categories
-	})
-
-	// Write transactions
+	// Write transaction data
 	for _, transaction := range transactions {
-		// Format amount for numerical interpretation
-		amount, err := strconv.ParseFloat(transaction[2], 64)
-		if err == nil {
-			// Create a copy of the transaction slice to avoid modifying the original
-			txCopy := make([]string, len(transaction))
-			copy(txCopy, transaction)
+		date := transaction[0]
+		description := transaction[1]
+		amount := transaction[2]
+		category := transaction[3]
 
-			// Format with period as decimal separator
-			txCopy[2] = fmt.Sprintf("%.2f", amount)
-
-			if err := writer.Write(txCopy); err != nil {
-				return err
-			}
-		} else {
-			// If we can't parse the amount, write the original
-			if err := writer.Write(transaction); err != nil {
-				return err
-			}
+		record := []string{date, description, amount, category}
+		if err := writer.Write(record); err != nil {
+			return err
 		}
 	}
+
+	// Write category breakdown
+	writer.Write([]string{"", "", "", ""})
+	writer.Write([]string{"CATEGORY BREAKDOWN", "", "", ""})
+
+	// List of categories in desired order
+	orderedCategories := []string{
+		"rent", "flat", "Electricity", "komm/internet",
+		"food", "restaurant", "clothes", "health",
+		"hobby", "transport", "travel", "other",
+		"Johanna Taschengeld", "bank costs",
+	}
+
+	for _, category := range orderedCategories {
+		if amount, exists := summary.TotalsByCategory[category]; exists {
+			writer.Write([]string{category, "", fmt.Sprintf("%.2f", amount), ""})
+		}
+	}
+
+	// Write uncategorized amount
+	writer.Write([]string{"uncategorized", "", fmt.Sprintf("%.2f", -(summary.TotalCosts + summary.TotalAllCategorized)), ""})
 
 	return nil
-}
-
-func PrintReportHeader(w *os.File, months []int, year int) {
-	fmt.Fprintf(w, "\nBudget Report for ")
-	for i, month := range months {
-		if i > 0 {
-			fmt.Fprintf(w, ", ")
-		}
-		fmt.Fprintf(w, "%02d", month) // %02d ensures single-digit months get a leading zero
-	}
-	fmt.Fprintf(w, " %d\n", year)
-	fmt.Fprintln(w, "----------------------------------------")
-	fmt.Fprintln(w, "=============")
-	fmt.Fprintln(w, "")
-	fmt.Fprintln(w, "")
-}
-
-func PrintFinancialSummary(w *os.File, totalCosts float64, totalIncome float64, transactions [][]string) {
-	// Basic stats
-	fmt.Fprintf(w, "Summary:\n")
-	fmt.Fprintln(w, "-----------------")
-	fmt.Fprintf(w, "Transactions: %d", len(transactions))
-	fmt.Fprintf(w, "\nTotal income: %.2f kr", totalIncome)
-	fmt.Fprintf(w, "\nTotal costs: %.2f kr", totalCosts)
-	fmt.Fprintf(w, "\nBalance: %.2f kr", totalIncome-totalCosts)
-	fmt.Fprintln(w, "")
-	fmt.Fprintln(w, "")
-}
-
-// TODO: Consider adding category validation if invalid categories become a problem
-// Current behavior: Invalid categories are silently ignored in the report
-// Potential improvement: Add validateCategory() function using orderedCategories
-// as the source of truth for valid categories
-
-func PrintCategoryBreakdown(w *os.File, totals map[string]float64) {
-	orderedCategories := []string{
-		"rent",
-		"flat",
-		"Electricity",
-		"komm/internet",
-		"food",
-		"restaurant",
-		"clothes",
-		"health",
-		"hobby",
-		"transport",
-		"travel",
-		"other",
-		"Johanna Taschengeld",
-		"bank costs",
-		//"internal, ignore",
-		// Add all your categories in the order you want them
-	}
-	// Categories
-	fmt.Fprintln(w, "\nSpending by Category")
-	fmt.Fprintln(w, "-----------------")
-	for _, category := range orderedCategories {
-		if amount, exists := totals[category]; exists {
-			fmt.Fprintf(w, "%-15s %17.2f kr\n", category+":", amount)
-			//fmt.Fprintf(w, "%-15s %10.2f kr\n", category+":", amount)
-		}
-	}
-}
-
-func Printuncategorized(w *os.File, totalCosts, matchedSum float64) {
-	fmt.Fprintf(w, "%-15s %17.2f kr\n", "uncategorized:", -(totalCosts+matchedSum))
-	fmt.Fprintln(w, "")
-	fmt.Fprintln(w, "")
-}
-
-func PrintComment(w *os.File) {
-	fmt.Fprintln(w, "\nKommentar: ")
-	fmt.Fprintln(w, "-----------------")
-	fmt.Fprintln(w, "Einkuenfte uncategorized (Lohn, Barnbidrag)")
-	fmt.Fprintln(w, "")
-	fmt.Fprintln(w, "")
-	fmt.Fprintln(w, "")
-}
-
-// The %-15s creates a left-aligned field 15 chars wide
-// %10.2f creates a right-aligned field 10 chars wide with 2 decimal places
-
-func PrintTransactionDetails(w *os.File, transactions [][]string) {
-	fmt.Fprintln(w, "\nAnnex. Transaction details")
-	fmt.Fprintln(w, "-----------------")
-	sort.Slice(transactions, func(i, j int) bool {
-		return transactions[i][3] < transactions[j][3] // Compare categories
-	})
-	for _, transaction := range transactions {
-		amount, _ := strconv.ParseFloat(transaction[2], 64) // Convert amount back to float
-		fmt.Fprintf(w, "%-12s %-30s %10.2f %-15s \n",
-			transaction[0], // date
-			transaction[1], // description
-			amount,         //amount
-			transaction[3]) // category
-	}
-}
-
-func PrintReportQuality(w *os.File, total, matched int, totalCosts, matchedSum float64) {
-	fmt.Fprintln(w, "")
-	fmt.Fprintf(w, "Annex. Report Quality check:\n")
-	fmt.Fprintln(w, "-----------------")
-
-	fmt.Fprintf(w, "Total transactions: %d\n", total)
-	fmt.Fprintf(w, "Total costs: %.2f kr\n", totalCosts)
-	fmt.Fprintf(w, "Categorized transactions: %d (%.1f%%)\n",
-		matched, float64(matched)/float64(total)*100)
-	fmt.Fprintf(w, "Categorized amount: %.2f kr (%.1f%%)\n",
-		matchedSum, matchedSum/totalCosts*100)
-	fmt.Fprintf(w, "uncategorized: -%.2f kr\n",
-		totalCosts+matchedSum)
-	fmt.Fprintln(w, "")
-	fmt.Fprintln(w, "")
 }
