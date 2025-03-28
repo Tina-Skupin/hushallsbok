@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
-	"path/filepath"
+	//"path/filepath"
 )
 
 func main() {
@@ -79,8 +79,9 @@ func main() {
 
 	// Save the text report
 	// Assuming outputFolder is where your CSV is saved
-	textFilePath := filepath.Join("output", "financial_report.txt")
-	err = SaveTextReport(textReport, textFilePath)
+	//textFilePath := filepath.Join("output", "financial_report.txt")
+	err = SaveTextReport(textReport, &summary)
+	//err = SaveTextReport(textReport, textFilePath)
 	fmt.Println("SaveTextReport result:", err)
 	if err != nil {
 		log.Fatalf("Failed to save text report: %v", err)

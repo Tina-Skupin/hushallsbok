@@ -140,13 +140,25 @@ func (r *Reporter) GenerateTextReport(transactions [][]string) string {
 }
 
 // create the txt report
-func SaveTextReport(report string, filename string) error {
-	return os.WriteFile(filename, []byte(report), 0644)
+func SaveTextReport(report string, summary *FinancialSummary) error {
+    // Ensure output directory exists
+    outputDir := "output" // Same directory as your CSV
+    if err := ensureOutputDir(outputDir); err != nil {
+        return err
+    }
+    
+    // Create text filename with directory path and proper naming convention
+    txtFilename := filepath.Join(outputDir, fmt.Sprintf("financial_report%d_%02d.txt", summary.Year, summary.Months[0]))
+    
+    // Save the file
+    return os.WriteFile(txtFilename, []byte(report), 0644)
 }
 
-// here comes the new csv code from boots:
+//func SaveTextReport(report string, filename string) error {
+//	return os.WriteFile(filename, []byte(report), 0644)
+//} old version
+
 func GenerateCSVReport(summary *FinancialSummary, transactions [][]string, filename string) error {
-	//func saveAsCSV(transactions [][]string, totals map[string]float64, year int, months []int) error {
 	// Ensure output directory exists
 	outputDir := "output" // You can change this to any directory name you prefer
 	if err := ensureOutputDir(outputDir); err != nil {
