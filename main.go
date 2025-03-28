@@ -9,7 +9,9 @@ import (
 func main() {
 
 	// all the input infos are being put in here:
-	// configuration of the raw csv (where in the table are the infos we want filtered out)
+
+
+	// configuration of the raw csv (where in the banc data are the infos we want filtered out)
 	configs := []CSVConfig{
 		{
 			StartRow:       8,
@@ -34,6 +36,7 @@ func main() {
 	months := []int{6}
 	// time scope
 	//months := []int{1,2,3,4,5,6,7,8,9,10,11,12} //if several months
+	year := 2023
 
 	// Get combined transactions instead of single file
 	transactions, err := combineTransactions(files, configs)
@@ -41,12 +44,12 @@ func main() {
 		log.Fatalf("Error combining transactions: %v", err)
 	}
 
+	// Apply filters to get final transaction set
 	cleaned := filterByMonth(transactions, months)
 	finalTransactions := filterExclusions(cleaned)
 
 	// Analysis
-
-	summary := calculateFinances(finalTransactions, 2023, months)
+	summary := calculateFinances(finalTransactions, year, months)
 
 	//die alten calls
 	//costsByCategories, matchies := categorizeExpenses(finalTransactions)
@@ -73,7 +76,7 @@ func main() {
 	reporter := NewReporter(summary, "output") // or whatever output directory you want
 
 	// Generate the text report
-	textReport := reporter.GenerateTextReport(transactions)
+	textReport := reporter.GenerateTextReport(finalTransactions)
 	fmt.Println("Report length:", len(textReport))
 	fmt.Println("First 100 chars:", textReport[:100])
 
@@ -88,7 +91,7 @@ func main() {
 	}
 
 	// Generate and save the CSV report
-	err = GenerateCSVReport(&summary, transactions, "financial_report.csv")
+	err = GenerateCSVReport(&summary, finalTransactions, "financial_report.csv")
 	if err != nil {
 		log.Fatalf("Failed to save CSV report: %v", err)
 	}
