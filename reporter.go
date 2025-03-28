@@ -189,25 +189,7 @@ func GenerateCSVReport(summary *FinancialSummary, transactions [][]string, filen
 	// Write a blank row as separator
 	writer.Write([]string{"", "", "", ""})
 
-	// Write headers
-	headers := []string{"Date", "Description", "Amount", "Category"}
-	if err := writer.Write(headers); err != nil {
-		return err
-	}
-
-	// Write transaction data
-	for _, transaction := range transactions {
-		date := transaction[0]
-		description := transaction[1]
-		amount := transaction[2]
-		category := transaction[3]
-
-		record := []string{date, description, amount, category}
-		if err := writer.Write(record); err != nil {
-			return err
-		}
-	}
-
+	
 	// Write category breakdown
 	writer.Write([]string{"", "", "", ""})
 	writer.Write([]string{"CATEGORY BREAKDOWN", "", "", ""})
@@ -228,6 +210,28 @@ func GenerateCSVReport(summary *FinancialSummary, transactions [][]string, filen
 
 	// Write uncategorized amount
 	writer.Write([]string{"uncategorized", "", fmt.Sprintf("%.2f", -(summary.TotalCosts + summary.TotalAllCategorized)), ""})
+
+	// Write a blank row as separator
+	writer.Write([]string{"", "", "", ""})
+	
+	// Write headers
+	headers := []string{"Date", "Description", "Amount", "Category"}
+	if err := writer.Write(headers); err != nil {
+		return err
+	}
+
+	// Write transaction data
+	for _, transaction := range transactions {
+		date := transaction[0]
+		description := transaction[1]
+		amount := transaction[2]
+		category := transaction[3]
+
+		record := []string{date, description, amount, category}
+		if err := writer.Write(record); err != nil {
+			return err
+		}
+	}
 
 	return nil
 }
